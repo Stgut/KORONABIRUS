@@ -1,0 +1,285 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct Tienda{
+	
+    char producto;
+    int precio; 
+    int inventario; 
+    int pedido; 
+    
+    
+    struct NodoListaDoble *ptrSiguiente;
+    struct NodoListaDoble *ptrAnterior;
+
+};
+
+void enlistar (struct Tienda **ptrI, struct Tienda **ptrF);
+int desenlistar (struct Tienda **ptrI, struct Tienda **ptrF);
+void imprimeListaI(struct Tienda *ptrI);
+void imprimeListaF(struct Tienda *ptrF);
+
+int main(){
+    struct Tienda *ptrInicial;
+    struct Tienda *ptrFinal;
+    ptrInicial = NULL;
+    ptrFinal = NULL;
+    char letra;
+    int opcion=1;
+    while (opcion != 0){
+        printf("Ingresa la opcion deseada\n");
+        printf("1.- Pedido\n2.- Retirar\n3.- Imprimir por Inicio\n4.- Imprimir por Final\n0.- Salir\n");
+        scanf("%d", &opcion);
+        fflush(stdin);
+        switch (opcion) {
+            case 1:
+                enlistar(&ptrInicial, &ptrFinal);
+                //insertar(&ptrInicial);
+                break;
+                
+            case 2:
+                //letra = eliminar(&ptrInicial);
+                letra = desenlistar(&ptrInicial, &ptrFinal);
+                printf("El valor eliminado es %d\n", letra);
+                break;
+                
+            case 3:
+                imprimeListaI(ptrInicial);
+                break;
+                
+            case 4:
+                imprimeListaF(ptrFinal);
+                break;
+                
+            default:
+                break;
+        }
+    }
+    return 0;
+}
+void enlistar (struct Tienda **ptrI, struct Tienda **ptrF){
+    struct Tienda *ptrNuevo;
+    struct Tienda *ptrActual;
+    struct Tienda *ptrAnterior;
+    
+    char letra;
+    int precio; 
+    int inventario; 
+    int pedido; 
+    
+    printf("¿Qué producto vas a ordenar?\n");
+    scanf("%c", &letra);
+    fflush(stdin);
+    
+	    printf("¿Cuál es el precio del producto? \n");
+	    scanf("%d", &precio);
+	    fflush(stdin);
+	    
+	    printf("¿Cuál es el precio del producto? \n");
+	    scanf("%d", &inventario);
+	    fflush(stdin);
+	    
+	    printf("Que numero deseas enlistar \n");
+	    scanf("%d", &pedido);
+	    fflush(stdin);
+    
+    
+    ptrNuevo = (struct Tienda *)malloc(sizeof(struct Tienda));
+    if (ptrNuevo != NULL){
+        
+		ptrNuevo->producto = letra;
+	        
+			ptrNuevo->precio = precio;
+	        ptrNuevo->inventario = inventario;
+	        ptrNuevo->pedido = pedido;
+        			
+        ptrNuevo->ptrSiguiente = NULL;
+        ptrNuevo->ptrAnterior = NULL;
+        
+    }else{
+        printf("No hay espacio en memoria\n");
+        return;
+    }
+    ptrAnterior = NULL;
+    ptrActual = *ptrI;
+    while (ptrActual != NULL && letra > ptrActual->producto){
+        ptrAnterior = ptrActual;
+        ptrActual=ptrActual->ptrSiguiente;
+    }
+    if(ptrAnterior == NULL){
+        ptrNuevo->ptrSiguiente = *ptrI;
+        *ptrI=ptrNuevo;
+        *ptrF=ptrNuevo;//nuevaLinea Agregada
+    }else{
+        ptrAnterior->ptrSiguiente = ptrNuevo;
+        ptrNuevo->ptrAnterior = ptrAnterior;
+        ptrNuevo->ptrSiguiente = ptrActual;
+        if (ptrActual != NULL){
+            ptrActual->ptrAnterior = ptrNuevo;
+        }else{
+             *ptrF = ptrNuevo;
+        }
+    }
+}
+int desenlistar (struct Tienda **ptrI, struct Tienda **ptrF){
+    char letra;
+	int precio; 
+	int inventario; 
+	int pedido; 
+	int producto; 
+	
+    struct Tienda *ptrActual;
+    struct Tienda *ptrAnterior;
+    struct Tienda *ptrTemp;
+    
+    int opcion; 
+    
+    printf("¿Que deseas eliminar?\n 1.-Letra\n 2.-Precio\n 3.-inventario \n 5.-Pedido\n 6.-Salir");
+    scanf(" %d", &opcion);
+    switch(opcion!=6){
+    	case 1: 
+    	  	printf("¿Que letra deseas eliminar?"); 
+    		scanf(" %d", &letra);
+		    //eliminar el primer producto
+		    if (letra == (*ptrI)->producto) {
+		        ptrTemp = *ptrI;
+		        *ptrI = (*ptrI)->ptrSiguiente;
+		        if (*ptrI == NULL){
+		            *ptrF = NULL;
+		        }else{
+		            (*ptrI)->ptrAnterior = NULL;
+		        }
+		        free(ptrTemp);
+		        
+		        return letra;
+		        
+		        ptrAnterior = *ptrI;
+    			ptrActual = (*ptrI)->ptrSiguiente;
+		    }
+		    break; 
+		    
+		    case 2: 
+    	  	printf("¿Que precio deseas eliminar?"); 
+    		scanf(" %d", &precio);
+    	
+		    //eliminar el primer producto
+		    if (precio == (*ptrI)->producto) {
+		        ptrTemp = *ptrI;
+		        *ptrI = (*ptrI)->ptrSiguiente;
+		        if (*ptrI == NULL){
+		            *ptrF = NULL;
+		        }else{
+		            (*ptrI)->ptrAnterior = NULL;
+		        }
+		        free(ptrTemp);
+		        
+		        return precio;
+		        
+		        ptrAnterior = *ptrI;
+    			ptrActual = (*ptrI)->ptrSiguiente;
+		    }
+		    break; 
+		    
+		    case 3: 
+    	  	printf("¿Que inventario deseas eliminaar?"); 
+    		scanf(" %d", &inventario);
+		    //eliminar el primer producto
+		    if (inventario == (*ptrI)->producto) {
+		        ptrTemp = *ptrI;
+		        *ptrI = (*ptrI)->ptrSiguiente;
+		        if (*ptrI == NULL){
+		            *ptrF = NULL;
+		        }else{
+		            (*ptrI)->ptrAnterior = NULL;
+		        }
+		        free(ptrTemp);
+		        
+		        return inventario;
+		        
+		        ptrAnterior = *ptrI;
+    			ptrActual = (*ptrI)->ptrSiguiente;
+		    }
+		    break; 
+		    
+		   
+		    
+		    case 4: 
+    	  	printf("¿Que pedido eliminar?"); 
+    		scanf(" %d", &pedido);
+    		
+		    //eliminar el primer producto
+		    if (pedido == (*ptrI)->producto) {
+		        ptrTemp = *ptrI;
+		        *ptrI = (*ptrI)->ptrSiguiente;
+		        if (*ptrI == NULL){
+		            *ptrF = NULL;
+		        }else{
+		            (*ptrI)->ptrAnterior = NULL;
+		        }
+		        free(ptrTemp);
+		        
+		        return pedido;
+		        
+		        ptrAnterior = *ptrI;
+    			ptrActual = (*ptrI)->ptrSiguiente;
+		    }
+		    break; 
+	}
+    
+    while (ptrActual != NULL && ptrActual -> producto != letra) {
+        ptrAnterior = ptrActual;
+        ptrActual = ptrActual->ptrSiguiente;
+    }
+     while (ptrActual != NULL && ptrActual -> producto != pedido) {
+        ptrAnterior = ptrActual;
+        ptrActual = ptrActual->ptrSiguiente;
+    }
+     while (ptrActual != NULL && ptrActual -> producto != inventario) {
+        ptrAnterior = ptrActual;
+        ptrActual = ptrActual->ptrSiguiente;
+    }
+     while (ptrActual != NULL && ptrActual -> producto != producto) {
+        ptrAnterior = ptrActual;
+        ptrActual = ptrActual->ptrSiguiente;
+    }
+    
+    if (ptrActual != NULL){
+        ptrTemp = ptrActual;
+        ptrAnterior->ptrSiguiente = ptrActual->ptrSiguiente;
+        ptrActual = ptrActual->ptrSiguiente;
+        if (ptrActual == NULL){
+            *ptrF = ptrAnterior;
+        }else{
+            ptrActual -> ptrAnterior = ptrAnterior;
+        }
+        free(ptrTemp);
+        return letra, precio, inventario, pedido;
+    }
+    return '\0';
+}
+
+
+void imprimeListaI(struct Tienda *ptrI){
+    if (ptrI==NULL){
+        printf("La lista esta vacia\n");
+        return;
+    }
+    printf("La lista es: \n");
+    while (ptrI != NULL) {
+        printf("%c,%d,%d,%d ===>", ptrI->producto, ptrI->precio, ptrI->inventario, ptrI->pedido);
+        ptrI=ptrI->ptrSiguiente;
+    }
+    printf("NULL\n");
+}
+void imprimeListaF(struct Tienda *ptrF){
+    if (ptrF==NULL){
+        printf("La lista esta vacia\n");
+        return;
+    }
+    printf("La lista es: \n");
+    while (ptrF != NULL) {
+         printf("%c,%d,%d,%d ===>", ptrF->producto, ptrF->precio, ptrF->inventario, ptrF->pedido);
+        ptrF=ptrF->ptrAnterior;
+    }
+    printf("NULL\n");
+}
